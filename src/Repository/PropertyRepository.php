@@ -21,6 +21,7 @@ class PropertyRepository extends ServiceEntityRepository
     }
 
 
+
 	/**
 	 * @return Property[];
 	 */
