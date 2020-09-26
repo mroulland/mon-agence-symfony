@@ -9,7 +9,9 @@
 namespace App\Form;
 
 
+use App\Entity\Option;
 use App\Entity\PropertySearch;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,6 +35,14 @@ class PropertySearchType extends AbstractType
 				'attr' => [
 					'placeholder' => 'Budget max'
 				]
+			])
+			->add('options', EntityType::class, [
+				'required' => false,
+				'label' => false,
+				'class' => Option::class,
+				'choice_label' => 'name',
+				'multiple' => true
+
 			])
 
 		;

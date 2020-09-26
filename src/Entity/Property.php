@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,9 +15,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Property
 {
 	const HEAT = [
-		0 => "éléctrique",
-		1 => "gaz"
-	];
+                     		0 => "éléctrique",
+                     		1 => "gaz"
+                     	];
 
     /**
      * @ORM\Id()
@@ -93,17 +95,23 @@ class Property
      */
     private $created_at;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Option", inversedBy="properties")
+     */
+    private $options;
+
 
     public function __construct()
 	{
 		$this->created_at = new \DateTime();
+  $this->options = new ArrayCollection();
 	}
 
 
 	public function getId(): ?int
-    {
-        return $this->id;
-    }
+                         {
+                             return $this->id;
+                         }
 
     public function getTitle(): ?string
     {
@@ -204,9 +212,9 @@ class Property
         return $this->heat;
     }
 	public function getHeatType(): string
-	{
-		return self::HEAT[$this->heat];
-	}
+                     	{
+                     		return self::HEAT[$this->heat];
+                     	}
     public function setHeat(int $heat): self
     {
         $this->heat = $heat;
@@ -270,6 +278,34 @@ class Property
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->addProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->contains($option)) {
+            $this->options->removeElement($option);
+            $option->removeProperty($this);
+        }
 
         return $this;
     }
